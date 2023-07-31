@@ -176,11 +176,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # USER ADMIN
 AUTH_USER_MODEL = 'users.User'
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static"
-]
-
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7)
