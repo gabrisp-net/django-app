@@ -15,7 +15,6 @@ import os
 import datetime
 
 import dj_database_url
-from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
 from google.oauth2 import service_account
 
@@ -29,7 +28,7 @@ load_dotenv()
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Application definition
@@ -190,7 +189,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
 }
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
