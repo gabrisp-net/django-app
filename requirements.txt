@@ -68,6 +68,7 @@ pipenv==2022.10.4
 platformdirs==2.5.2
 prompt-toolkit==3.0.33
 protobuf==3.19.4
+psycopg2-binary==2.9.6
 ptyprocess==0.7.0
 pure-eval==0.2.2
 py-moneyed==2.0
