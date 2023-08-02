@@ -64,4 +64,4 @@ urlpatterns = [
 
 
 
-handler404 = 'products.views.handler404'
+#handler404 = 'products.views.handler404'
