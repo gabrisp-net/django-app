@@ -58,12 +58,9 @@ class UserSerializer(ModelSerializer):
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    token = serializers.SerializerMethodField()
-
     class Meta:
         model = User
-        fields = ['email', 'password', 'first_name', 'last_name', 'stripe', 'token']
-
+        fields = ['email', 'password', 'first_name', 'last_name', 'stripe']
     def create(self, validated_data):
         customer = self.stripe_create(validated_data)
         password = validated_data.pop('password', None)
@@ -71,7 +68,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         if password is not None:
             instance.set_password(password)
             instance.stripe = customer
-            #refresh = RefreshToken.for_user(instance)
         instance.save()
         return instance
 
@@ -80,12 +76,26 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             name=validated_data['first_name'] + " " + validated_data['last_name']
         )
-        print(customer.id)
         return customer.id
 
-    def get_token(self, id):
-        refresh = RefreshToken.for_user(id)
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token)
-        }
+
+
+class UserRegisterSerializer_Subscription(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name', 'stripe']
+    def create(self, validated_data):
+        customer = self.stripe_create(validated_data)
+        password = validated_data.pop('password', None)
+        instance = self.Meta.model(**validated_data)
+        if password is not None:
+            instance.set_password(password)
+            instance.stripe = customer
+        instance.save()
+        return instance
+    def stripe_create(self, validated_data):
+        customer = stripe.Customer.create(
+            email=validated_data['email'],
+            name=validated_data['first_name'] + " " + validated_data['last_name']
+        )
+        return customer.id

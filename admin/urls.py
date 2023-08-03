@@ -9,7 +9,7 @@ from cart.api.models import CartAddItemAPIView, CartRemoveItemAPIView, CartIsIn,
 from orders.stripe.views import PaymentIntentView, CardViews, CustomerView, PaymentMethodView, PaypalView, PaypalOrderView, DetachPm
 from orders.downloads.views import DownloadView
 from orders.api.views import OrderView, getOrderView, getOrders
-
+from users.api.views import UserSubscriberView
 from members.api.views import ItemsMemberships, MembershipsView, ProductMembersView, ItemMembersView, VideoMembersView, MembershipView, MembershipIntent, SubscriptionView, CancelSubscriptionView, StopCancelSubscriptionView, AsapCancelSubscriptionView, MethodUpdateView, AttachMethod, OtherMemberships, ProductsMemberships, VideosMemberships
 
 schema_view = get_schema_view(
@@ -60,6 +60,7 @@ urlpatterns = [
     path('api/members/subscription/cancel/stop/<str:id>/', StopCancelSubscriptionView.as_view()),
     path('api/members/subscription/cancel/asap/<str:id>/', AsapCancelSubscriptionView.as_view()),
     path('api/members/subscription/method/update/<str:id>/<str:pm>/', MethodUpdateView.as_view()),
+    path('api/account/subscribe/', UserSubscriberView.as_view())
 ] #+ static(MEDIA_URL, document_root=MEDIA_ROOT) CancelSubscriptionView StopCancelSubscriptionView
 
 

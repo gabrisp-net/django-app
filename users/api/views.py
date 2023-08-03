@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.utils import  timezone
 from django.utils.encoding import force_str
 from drf_yasg.utils import swagger_auto_schema
+from nanoid import generate
 from rest_framework.viewsets import ViewSet
 from rest_framework.views import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED
@@ -37,6 +38,27 @@ from orders.models import Order
 
 stripe.api_key = os.getenv('SK')
 
+class UserSubscriberView(APIView):
+    def post(self, request):
+        password = generate("0123456789abcefghijklmnopqrstuvwxyzABCDEFJHIJKLMNOPQRSTUVWXYZ!?¿*$%&/()=", 10)
+        serializer = UserRegisterSerializer(data={'first_name': request.data['first_name'],'last_name' :request.data['last_name'],"email":request.data['email'],"password": password})
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            user = User.objects.get(email=serializer.data['email'])
+            subject = f'Hello {user.first_name} please confirm your account'
+            message = ''
+            email_from = f'Gabrisp <{settings.EMAIL_HOST_USER}>'
+            recipient_list = [serializer.data['email'], ]
+            html_content = render_to_string('emails/confirmEmailSubscription.html', {
+                'name': serializer.data['first_name'] + " " + serializer.data['last_name'],
+                "password": password,
+                "uidb64": urlsafe_base64_encode(force_bytes(user.pk)),
+                "token": account_activation_token.make_token(user),
+
+            })  # render with dynamic value
+            send_mail(subject, message, email_from, recipient_list, html_message=html_content)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 class UserViewSet(ViewSet):
     @swagger_auto_schema(operation_description="Returns the logged in user, if present", operation_id="accountData" , operation_security="JWT")
